@@ -1,0 +1,3 @@
+*.artifacts
+*.logs
+*.ansible_vault_pass
