@@ -1,0 +1,18 @@
+- name: install k3d cluster
+  hosts: servers
+  become: true
+  become_method: sudo
+  tasks:
+  - name: Download k3d
+    ansible.builtin.get_url:
+      url: https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh
+      dest: /home/ansible/
+
+  - name: Make k3d executable
+    ansible.builtin.shell: chmod +x /home/ansible/install.sh
+
+  - name: Install k3d
+    ansible.builtin.shell: /home/ansible/install.sh
+
+  - name: Deploy k3d cluster
+    ansible.builtin.shell: k3d cluster create dev-cluster --api-port 192.168.2.5:6444 -p "192.168.2.5:8585:80@loadbalancer"

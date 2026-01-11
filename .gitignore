@@ -1,4 +1,6 @@
 *.artifacts
 *.logs
-*.ansible_vault_pass
 *.venv
+*.lock
+collections*
+roles*
