@@ -1,0 +1,6 @@
+- name: Import kube cluster playbook
+  ansible.builtin.import_playbook: k3s.orchestration.site
+  vars:
+    ansible_host_key_checking: false
+  become: true
+  become_method: sudo

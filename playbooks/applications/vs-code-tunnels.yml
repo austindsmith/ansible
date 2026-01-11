@@ -1,0 +1,69 @@
+---
+- name: Install VS Code Tunnel on Ubuntu
+  hosts: cloud.theblacklodge.org
+  become: true
+  vars:
+    vscode_user: ubuntu                 # change to the user that will run the tunnel
+    vscode_server_dir: "/home/{{ vscode_user }}/.vscode-server"
+    vscode_service_name: "vscode-tunnel"
+
+  tasks:
+    - name: Ensure dependencies are installed
+      apt:
+        name:
+          - curl
+          - wget
+          - tar
+          - unzip
+        state: present
+        update_cache: yes
+
+    - name: Create VS Code server directory
+      file:
+        path: "{{ vscode_server_dir }}"
+        state: directory
+        owner: "{{ vscode_user }}"
+        group: "{{ vscode_user }}"
+        mode: '0755'
+
+    - name: Download VS Code Server
+      get_url:
+        url: https://update.code.visualstudio.com/latest/server-linux-x64/stable
+        dest: "{{ vscode_server_dir }}/vscode-server.tar.gz"
+        mode: '0644'
+      become_user: "{{ vscode_user }}"
+
+    - name: Extract VS Code Server
+      unarchive:
+        src: "{{ vscode_server_dir }}/vscode-server.tar.gz"
+        dest: "{{ vscode_server_dir }}"
+        remote_src: yes
+        creates: "{{ vscode_server_dir }}/bin"
+      become_user: "{{ vscode_user }}"
+
+    - name: Create systemd service for VS Code Tunnel
+      copy:
+        dest: /etc/systemd/system/{{ vscode_service_name }}.service
+        content: |
+          [Unit]
+          Description=VS Code Remote Tunnel
+          After=network.target
+
+          [Service]
+          Type=simple
+          User={{ vscode_user }}
+          ExecStart={{ vscode_server_dir }}/bin/code tunnel --start-server
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable and start VS Code Tunnel service
+      systemd:
+        name: "{{ vscode_service_name }}"
+        enabled: yes
+        state: started

@@ -1,0 +1,12 @@
+vscode_user: ansible
+
+vscode_server_dir: "/home/{{ vscode_user }}/.vscode-server"
+
+vscode_service_name: vscode-tunnel
+
+vscode_server_url: "https://update.code.visualstudio.com/latest/server-linux-x64/stable"
+
+vscode_service_enabled: true
+
+vscode_server_owner: "{{ vscode_user }}"
+vscode_server_group: "{{ vscode_user }}"
