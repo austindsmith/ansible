@@ -1,4 +1,5 @@
 *.artifacts
+*.ansible
 *.logs
 *.venv
 *.lock

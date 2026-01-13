@@ -1,3 +1,2 @@
-- hosts: k3s_cluster
-  name: Import kube cluster playbook
-  ansible.builtin.import_playbook: k3s.orchestration.sitea
+- name: Import kube cluster playbook
+  ansible.builtin.import_playbook: k3s.orchestration.site

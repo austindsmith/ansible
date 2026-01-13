@@ -1,17 +1,13 @@
 ---
 - name: install docker
-  hosts: servers
   ansible.builtin.import_playbook: docker.yml
 
 - name: install open-iscsi
-  hosts: k3s_cluster
   ansible.builtin.import_playbook: open-iscsi.yml
 
 - name: install development k8s cluster with k3d
-  hosts: server
   ansible.builtin.import_playbook: k3d.yml
 
 - name: install k3s
-  hosts: k3s_cluster
   ansible.builtin.import_playbook: k3s.yml
 

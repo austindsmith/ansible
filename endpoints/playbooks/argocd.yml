@@ -1,0 +1,22 @@
+- name: install argocd
+  hosts: endpoints
+  become: true
+  tasks:
+    - name: get latest argocd release info
+      uri:
+        url: "https://api.github.com/repos/argoproj/argo-cd/releases/latest"
+        return_content: yes
+      register: argocd_release
+
+    - name: download argocd cli
+      get_url:
+        url: "https://github.com/argoproj/argo-cd/releases/download/{{ argocd_release.json.tag_name }}/argocd-linux-amd64"
+        dest: /tmp/argocd
+        mode: '0755'
+
+    - name: install argocd cli
+      copy:
+        src: /tmp/argocd
+        dest: /usr/local/bin/argocd
+        mode: '0755'
+        remote_src: yes
